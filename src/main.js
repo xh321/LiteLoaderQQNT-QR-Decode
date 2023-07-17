@@ -4,14 +4,14 @@ const PNG = require("pngjs").PNG;
 const fs = require("fs");
 
 function onLoad() {
-    ipcMain.handle("qr_decode.decode", (_, picPath) => {
+    ipcMain.handle("LiteLoader.qr_decode.decode", (_, picPath) => {
         let imagedata = fs.readFileSync(picPath);
         const pngData = PNG.sync.read(imagedata);
         const qrArray = new Uint8ClampedArray(pngData.data);
         return jsQR(qrArray, pngData.width, pngData.height)?.data;
     });
 
-    ipcMain.handle("qr_decode.showResult", (_, content) => {
+    ipcMain.handle("LiteLoader.qr_decode.showResult", (_, content) => {
         if (content == null) {
             dialog.showMessageBox({
                 type: "warning",
