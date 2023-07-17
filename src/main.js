@@ -8,10 +8,19 @@ function onLoad() {
         let imagedata = fs.readFileSync(picPath);
         const pngData = PNG.sync.read(imagedata);
         const qrArray = new Uint8ClampedArray(pngData.data);
-        return jsQR(qrArray, pngData.width, pngData.height).data;
+        return jsQR(qrArray, pngData.width, pngData.height)?.data;
     });
 
     ipcMain.handle("qr_decode.showResult", (_, content) => {
+        if (content == null) {
+            dialog.showMessageBox({
+                type: "warning",
+                title: "提示",
+                message: "这不是一个有效的二维码，解码失败。",
+                buttons: ["确定"]
+            });
+            return;
+        }
         var isUrl =
             /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\*\+,;=.]+$/.test(
                 content
