@@ -22,9 +22,11 @@ const qrcodeHTML = `
 
 function onLoad() {
     document.addEventListener("contextmenu", (event) => {
-        const { classList, src } = event.target;
+        var element = document.querySelector(".main-area__image");
+        if (element == null) return;
+        const { classList, src } = element;
         //如果是图片内容
-        if (["main-area__image"].includes(classList[0])) {
+        if (location.href.includes("/imageViewer")) {
             var hasFound = false;
             var timer = setInterval(async () => {
                 if (hasFound) return;

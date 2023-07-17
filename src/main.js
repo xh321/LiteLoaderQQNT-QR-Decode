@@ -5,10 +5,15 @@ const fs = require("fs");
 
 function onLoad() {
     ipcMain.handle("LiteLoader.qr_decode.decode", (_, picPath) => {
-        let imagedata = fs.readFileSync(picPath);
-        const pngData = PNG.sync.read(imagedata);
-        const qrArray = new Uint8ClampedArray(pngData.data);
-        return jsQR(qrArray, pngData.width, pngData.height)?.data;
+        try {
+            let imagedata = fs.readFileSync(picPath);
+            const pngData = PNG.sync.read(imagedata);
+            const qrArray = new Uint8ClampedArray(pngData.data);
+            return jsQR(qrArray, pngData.width, pngData.height)?.data;
+        } catch (e) {
+            console.log("[QR解析]", "发生解析错误", e);
+            return null;
+        }
     });
 
     ipcMain.handle("LiteLoader.qr_decode.showResult", (_, content) => {
