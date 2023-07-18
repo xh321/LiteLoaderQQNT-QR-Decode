@@ -1,15 +1,23 @@
 const { ipcMain, dialog, shell, clipboard } = require("electron");
 const jsQR = require("jsqr");
+var jpeg = require("jpeg-js");
 const PNG = require("pngjs").PNG;
 const fs = require("fs");
 
 function onLoad() {
     ipcMain.handle("LiteLoader.qr_decode.decode", (_, picPath) => {
         try {
-            let imagedata = fs.readFileSync(picPath);
-            const pngData = PNG.sync.read(imagedata);
-            const qrArray = new Uint8ClampedArray(pngData.data);
-            return jsQR(qrArray, pngData.width, pngData.height)?.data;
+            let fileContent = fs.readFileSync(picPath);
+
+            var imageData = null;
+            try {
+                imageData = PNG.sync.read(fileContent);
+            } catch {
+                imageData = jpeg.decode(fileContent);
+            }
+
+            const qrArray = new Uint8ClampedArray(imageData.data);
+            return jsQR(qrArray, imageData.width, imageData.height)?.data;
         } catch (e) {
             console.log("[QR解析]", "发生解析错误", e);
             return null;
