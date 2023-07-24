@@ -20,7 +20,16 @@ const qrcodeHTML = `
 <span class="q-context-menu-item__text">作为二维码解析</span>
 `;
 
-function onLoad() {
+async function onLoad() {
+    await window.qr_decode.loadFinished(() => {
+        if (location.href.indexOf("#/imageViewer") != -1) {
+            const link_element = document.createElement("script");
+            link_element.type = "text/javascript";
+            link_element.src = "https://unpkg.com/@zxing/browser@latest";
+            document.head.appendChild(link_element);
+        }
+    });
+
     document.addEventListener("contextmenu", (event) => {
         var element = document.querySelector(".main-area__image");
         if (element == null) return;
@@ -65,10 +74,20 @@ function onLoad() {
                 qrcodeElement.addEventListener("click", async () => {
                     // 先关闭右键菜单
                     qContextMenu.remove();
-                    var content = await window.qr_decode.decode(
-                        decodeURIComponent(src.replace("appimg://", ""))
-                    );
-                    await window.qr_decode.showResult(content);
+
+                    try {
+                        const codeReader =
+                            new ZXingBrowser.BrowserQRCodeReader();
+
+                        var decoded = await codeReader.decodeFromImageElement(
+                            element
+                        );
+
+                        await window.qr_decode.showResult(decoded);
+                    } catch (e) {
+                        console.log("[QR-Decode]", "解码失败", e);
+                        await window.qr_decode.showFailed(e);
+                    }
                 });
             }, 50);
         }

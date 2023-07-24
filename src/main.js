@@ -1,39 +1,30 @@
 const { ipcMain, dialog, shell, clipboard } = require("electron");
-const jsQR = require("jsqr");
-var jpeg = require("jpeg-js");
-const PNG = require("pngjs").PNG;
-const fs = require("fs");
 
 function onLoad() {
-    ipcMain.handle("LiteLoader.qr_decode.decode", (_, picPath) => {
-        try {
-            let fileContent = fs.readFileSync(picPath);
-
-            var imageData = null;
-            try {
-                imageData = PNG.sync.read(fileContent);
-            } catch {
-                imageData = jpeg.decode(fileContent);
-            }
-
-            const qrArray = new Uint8ClampedArray(imageData.data);
-            return jsQR(qrArray, imageData.width, imageData.height)?.data;
-        } catch (e) {
-            console.log("[QR解析]", "发生解析错误", e);
-            return null;
-        }
+    ipcMain.handle("LiteLoader.qr_decode.showFailed", (_, data) => {
+        dialog.showMessageBox({
+            type: "error",
+            title: "提示",
+            message:
+                "这可能不是一个有效的二维码，解码失败。\n错误信息为：" +
+                data?.stack,
+            buttons: ["确定"]
+        });
     });
 
-    ipcMain.handle("LiteLoader.qr_decode.showResult", (_, content) => {
+    ipcMain.handle("LiteLoader.qr_decode.showResult", (_, data) => {
+        var content = data?.text;
+
         if (content == null) {
             dialog.showMessageBox({
                 type: "warning",
                 title: "提示",
-                message: "这不是一个有效的二维码，解码失败。",
+                message: "这可能不是一个有效的二维码，解码失败。",
                 buttons: ["确定"]
             });
             return;
         }
+
         var isUrl =
             /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\*\+,;=.]+$/.test(
                 content
@@ -79,6 +70,15 @@ function onLoad() {
     });
 }
 
+function onBrowserWindowCreated(window) {
+    window.webContents.on("did-stop-loading", () => {
+        if (window.webContents.getURL().indexOf("#/imageViewer") != -1) {
+            window.webContents.send("LiteLoader.qr_decode.loadFinished");
+        }
+    });
+}
+
 module.exports = {
-    onLoad
+    onLoad,
+    onBrowserWindowCreated
 };
