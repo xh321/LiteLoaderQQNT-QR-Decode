@@ -13,7 +13,7 @@ function onLoad() {
     });
 
     ipcMain.handle("LiteLoader.qr_decode.showResult", (_, data) => {
-        var content = data?.text;
+        var content = data;
 
         if (content == null) {
             dialog.showMessageBox({
@@ -70,15 +70,6 @@ function onLoad() {
     });
 }
 
-function onBrowserWindowCreated(window) {
-    window.webContents.on("did-stop-loading", () => {
-        if (window.webContents.getURL().indexOf("#/imageViewer") != -1) {
-            window.webContents.send("LiteLoader.qr_decode.loadFinished");
-        }
-    });
-}
-
 module.exports = {
-    onLoad,
-    onBrowserWindowCreated
+    onLoad
 };

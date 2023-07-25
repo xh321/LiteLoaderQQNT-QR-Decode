@@ -21,19 +21,10 @@ const qrcodeHTML = `
 `;
 
 async function onLoad() {
-    await window.qr_decode.loadFinished(() => {
-        if (location.href.indexOf("#/imageViewer") != -1) {
-            const link_element = document.createElement("script");
-            link_element.type = "text/javascript";
-            link_element.src = "https://unpkg.com/@zxing/browser@latest";
-            document.head.appendChild(link_element);
-        }
-    });
-
     document.addEventListener("contextmenu", (event) => {
         var element = document.querySelector(".main-area__image");
         if (element == null) return;
-        const { classList, src } = element;
+        
         //如果是图片内容
         if (location.href.includes("/imageViewer")) {
             var hasFound = false;
@@ -76,12 +67,7 @@ async function onLoad() {
                     qContextMenu.remove();
 
                     try {
-                        const codeReader =
-                            new ZXingBrowser.BrowserQRCodeReader();
-
-                        var decoded = await codeReader.decodeFromImageElement(
-                            element
-                        );
+                        var decoded = await decodeQR(element);
 
                         await window.qr_decode.showResult(decoded);
                     } catch (e) {
@@ -92,6 +78,37 @@ async function onLoad() {
             }, 50);
         }
     });
+}
+
+function getBase64Image(img) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    var dataURL = canvas.toDataURL("image/png");
+    return dataURL;
+}
+
+async function decodeQR(image) {
+    // 调用草料二维码API
+    return await fetch("https://qrdetector-api.cli.im/v1/detect_binary", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.183"
+        },
+        body: `image_data=${getBase64Image(image)}&remove_background=0`
+    })
+        .then((res) => res.json())
+        .then((json) => {
+            if (json.status == 1) {
+                return json.data.qrcode_content;
+            } else {
+                throw Error(json.message);
+            }
+        });
 }
 
 export { onLoad };
