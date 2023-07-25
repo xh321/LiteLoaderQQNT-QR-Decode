@@ -1,6 +1,6 @@
 const qrcodeHTML = `
 <div class="q-context-menu-item__icon q-context-menu-item__head">
-    <svg class="q-icon" style="margin-top:5px" t="1689317139126" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2413" width="18" height="18">
+    <svg class="q-icon" t="1689317139126" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2413" width="18" height="18">
         <defs>
             <style><![CDATA[
             .path {
