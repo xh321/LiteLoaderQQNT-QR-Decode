@@ -24,7 +24,7 @@ async function onLoad() {
     document.addEventListener("contextmenu", (event) => {
         var element = document.querySelector(".main-area__image");
         if (element == null) return;
-        
+
         //如果是图片内容
         if (location.href.includes("/imageViewer")) {
             var hasFound = false;
@@ -38,6 +38,11 @@ async function onLoad() {
                     clearInterval(timer);
                 }
 
+                if (qContextMenu.querySelector(".qr-decode-menu") != null) {
+                    //已经插入了一次，无需重复插入
+                    return;
+                }
+
                 // 插入分隔线
                 const separator = document.createElement("div");
                 separator.classList.add("q-context-menu-separator");
@@ -47,7 +52,8 @@ async function onLoad() {
                 const qrcodeElement = document.createElement("a");
                 qrcodeElement.classList.add(
                     "q-context-menu-item",
-                    "q-context-menu-item--normal"
+                    "q-context-menu-item--normal",
+                    "qr-decode-menu"
                 );
                 qrcodeElement.setAttribute("aria-disabled", "false");
                 qrcodeElement.setAttribute("role", "menuitem");
