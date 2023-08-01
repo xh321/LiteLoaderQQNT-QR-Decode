@@ -1,17 +1,15 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "type": "extension",
     "name": "二维码解析",
     "slug": "qr_code",
     "description": "对聊天消息中的二维码进行解析",
     "version": "1.3.2",
     "thumbnail": "./icon.png",
-    "author": [
-        {
-            "name": "XiaoHe321",
-            "link": "https://github.com/xh321"
-        }
-    ],
+    "author": {
+        "name": "XiaoHe321",
+        "link": "https://github.com/xh321"
+    },
     "repository": {
         "repo": "xh321/LiteLoaderQQNT-QR-Decode",
         "branch": "master"
