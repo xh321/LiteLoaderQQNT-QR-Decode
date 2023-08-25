@@ -5,7 +5,9 @@ LiteLoaderQQNT插件，快速解析聊天中的图片二维码。
 
 ## 使用方法
 
-clone或下载zip文件解压，保留文件夹结构（文件夹名称为`插件名`，内容为github上的内容），将文件夹移动至`LiteLoaderQQNT数据目录/plugins/`下面，重启QQNT即可。
+建议从`LiteLoaderQQNT`应用商店中直接下载安装，方便快捷。
+
+也可以clone或下载zip文件解压，保留文件夹结构（文件夹名称为`插件名`，内容为github上的内容），将文件夹移动至`LiteLoaderQQNT数据目录/plugins/`下面，重启QQNT即可。
 
 双击聊天中的二维码，在新弹出的图片预览界面对图片进行右键，可发现解析二维码菜单，点击即可。
 
