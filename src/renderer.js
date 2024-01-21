@@ -20,6 +20,8 @@ const qrcodeHTML = `
 <span class="q-context-menu-item__text">作为二维码解析</span>
 `;
 
+onLoad();
+
 async function onLoad() {
     document.addEventListener("contextmenu", (event) => {
         var element = document.querySelector(".main-area__image");
@@ -116,5 +118,3 @@ async function decodeQR(image) {
             }
         });
 }
-
-export { onLoad };

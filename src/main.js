@@ -1,5 +1,7 @@
 const { ipcMain, dialog, shell, clipboard } = require("electron");
 
+onLoad();
+
 function onLoad() {
     ipcMain.handle("LiteLoader.qr_decode.showFailed", (_, data) => {
         dialog.showMessageBox({
@@ -69,7 +71,3 @@ function onLoad() {
             });
     });
 }
-
-module.exports = {
-    onLoad
-};
