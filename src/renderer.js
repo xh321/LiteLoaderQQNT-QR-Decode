@@ -1,11 +1,14 @@
+import { addMainQContextMenu } from "./qContextMenu.js";
+import { decodeQR } from "./decodeQR.js";
+
 const qrcodeHTML = `
 <div class="q-context-menu-item__icon q-context-menu-item__head">
     <svg class="q-icon" t="1689317139126" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2413" width="18" height="18">
         <defs>
             <style><![CDATA[
             .path {
-                stroke: white;
-                fill: white;
+                stroke: currentColor;
+                fill: currentColor;
                 }
             ]]></style>
         </defs>
@@ -23,12 +26,18 @@ const qrcodeHTML = `
 onLoad();
 
 async function onLoad() {
+
+    addMainQContextMenu();
+
     document.addEventListener("contextmenu", (event) => {
         var element = document.querySelector(".main-area__image");
         if (element == null) return;
 
         //如果是图片内容
-        if (location.href.includes("/imageViewer")) {
+        if (
+            location.href.includes("/imageViewer") ||
+            location.href.includes("/image-viewer")
+        ) {
             var hasFound = false;
             var timer = setInterval(async () => {
                 if (hasFound) return;
@@ -86,35 +95,4 @@ async function onLoad() {
             }, 50);
         }
     });
-}
-
-function getBase64Image(img) {
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, img.width, img.height);
-    var dataURL = canvas.toDataURL("image/png");
-    return dataURL;
-}
-
-async function decodeQR(image) {
-    // 调用草料二维码API
-    return await fetch("https://qrdetector-api.cli.im/v1/detect_binary", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.183"
-        },
-        body: `image_data=${getBase64Image(image)}&remove_background=0`
-    })
-        .then((res) => res.json())
-        .then((json) => {
-            if (json.status == 1) {
-                return json.data.qrcode_content;
-            } else {
-                throw Error(json.message);
-            }
-        });
 }
