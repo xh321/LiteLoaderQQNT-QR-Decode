@@ -12,7 +12,10 @@
     },
     "repository": {
         "repo": "xh321/LiteLoaderQQNT-QR-Decode",
-        "branch": "master"
+        "branch": "master",
+        "release": {
+            "tag": "1.3.4"
+        }
     },
     "platform": ["win32", "darwin", "linux"],
     "injects": {
