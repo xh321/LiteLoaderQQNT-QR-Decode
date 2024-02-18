@@ -60,7 +60,7 @@ const qrcodeBtn = `
 onLoad();
 
 function insertBottomMenuBtn() {
-  let findCount = 0;
+  var findCount = 0;
   const findFuncMenuInterval = setInterval(() => {
     if (findCount++ > 50) {
       clearInterval(findFuncMenuInterval);
@@ -116,7 +116,7 @@ async function onLoad() {
         }
         const qContextMenu = qContextMenus[0];
 
-        if (qContextMenu.querySelector(".qr-decode-menu") != null) {
+        if (qContextMenu.querySelector('#qr-decode-menu') != null) {
           //已经插入了一次，无需重复插入
           return;
         }
@@ -133,6 +133,7 @@ async function onLoad() {
           "q-context-menu-item--normal",
           "qr-decode-menu"
         );
+        qrcodeElement.setAttribute("id", "qr-decode-menu");
         qrcodeElement.setAttribute("aria-disabled", "false");
         qrcodeElement.setAttribute("role", "menuitem");
         qrcodeElement.setAttribute("tabindex", "-1");
