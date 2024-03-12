@@ -1,5 +1,5 @@
 const { ipcMain, dialog, shell, clipboard } = require("electron");
-
+const fs = require("fs");
 const exec = require("child_process").exec;
 var defaultBrowser = LiteLoader.api.config.get("qr_decode", {
   browser: "",
@@ -13,6 +13,7 @@ function openUrl(url) {
     fs.existsSync(defaultBrowser.browser)
   ) {
     var cmd = '"' + defaultBrowser.browser + '"' + ' "' + url + '"';
+
     exec(cmd);
   } else {
     shell.openExternal(url);
