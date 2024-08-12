@@ -4,10 +4,8 @@ function getBase64Image(img) {
     canvas.height = img.height;
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, img.width, img.height);
-    var dataURL = canvas.toDataURL("image/png");
-    return dataURL;
+    return canvas.toDataURL("image/png");
 }
-
 export async function decodeQR(image) {
     // 调用草料二维码API
     return await fetch("https://qrdetector-api.cli.im/v1/detect_binary", {
@@ -33,9 +31,10 @@ export async function decodeQRUrl(imageUrl) {
     return new Promise((accept, reject) => {
         var image = new Image();
         image.setAttribute("crossOrigin", "anonymous");
-        image.src = imageUrl;
+        image.src = encodeURI(imageUrl);
         image.onload = async function () {
             try {
+                console.log('准备解析path辣，地址是'+encodeURI(imageUrl))
                 var data = await decodeQR(image);
                 accept(data);
             } catch (e) {
