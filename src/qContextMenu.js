@@ -1,73 +1,69 @@
-import { decodeQRUrl } from "./decodeQR.js";
-
-//提取自lite-tools
+import {decodeQRUrl} from "./decodeQR.js";
 
 /**
- * 右键菜单插入功能方法
+ * 右键菜单插入功能方法,提取自lite-tools
  * @param {Element} qContextMenu 右键菜单元素
  * @param {String} icon SVG字符串
  * @param {String} title 选项显示名称
  * @param {Function} callback 回调函数
  */
 function addQContextMenu(qContextMenu, icon, title, callback) {
-  if (qContextMenu.querySelector("#qr-decode-menu") != null) return;
+    if (qContextMenu.querySelector("#qr-decode-menu") != null) return;
 
-  const tempEl = document.createElement("div");
-  tempEl.innerHTML = document
-    .querySelector(`.q-context-menu :not([disabled="true"])`)
-    .outerHTML.replace(/<!---->/g, "");
-  const item = tempEl.firstChild;
-  item.id = "qr-decode-menu";
-  if (item.querySelector(".q-icon")) {
-    item.querySelector(".q-icon").innerHTML = icon;
-  }
-  if (item.classList.contains("q-context-menu-item__text")) {
-    item.innerText = title;
-  } else {
-    item.querySelector(".q-context-menu-item__text").innerText = title;
-  }
-  item.addEventListener("click", () => {
-    callback();
-    qContextMenu.remove();
-  });
-  qContextMenu.appendChild(item);
+    const tempEl = document.createElement("div");
+    tempEl.innerHTML = document
+        .querySelector(`.q-context-menu`)//这里做了改动，删去了 :not([disabled="true"])，否则最新QQ获取不到
+        .outerHTML.replace(/<!---->/g, "");
+    //较新的QQ版本第一个子元素是一行表情，所以这里直接搜索就行
+    const item = tempEl.querySelector(".q-context-menu-item")
+    item.id = "qr-decode-menu";
+    if (item.querySelector(".q-icon")) {
+        item.querySelector(".q-icon").innerHTML = icon;
+    }
+    if (item.classList.contains("q-context-menu-item__text")) {
+        item.innerText = title;
+    } else {
+        item.querySelector(".q-context-menu-item__text").innerText = title;
+    }
+    item.addEventListener("click", () => {
+        callback();
+        qContextMenu.remove();
+    });
+    qContextMenu.appendChild(item);
 }
 
 /**
  * 右键菜单监听
  */
 function addMainQContextMenu() {
-  let isRightClick = false;
-  let imagePath = "";
-  let imgEl = null;
-  document.addEventListener("mouseup", (event) => {
-    if (event.button === 2) {
-      isRightClick = true;
-      imgEl = event.target;
-      if (
-        imgEl.classList.contains("image-content") &&
-        imgEl?.src?.startsWith("appimg://")
-      ) {
-        imagePath = imgEl?.src?.replace("appimg://", "");
-      } else {
-        imgEl = null;
-        imagePath = "";
-      }
-    } else {
-      isRightClick = false;
-      imagePath = "";
-    }
-  });
-  new MutationObserver(() => {
-    // log(document.querySelector(".q-context-menu").innerHTML);
+    let imagePath = "";
+    let imgEl = null;
+    document.addEventListener("mouseup", (event) => {
+        if (event.button === 2) {
+            imgEl = event.target;
+            if (
+                imgEl.classList.contains("image-content") &&
+                imgEl?.src?.startsWith("appimg://")
+            ) {
+                imagePath = imgEl?.src?.replace("appimg://", "");
+            } else {
+                imgEl = null;
+                imagePath = "";
+            }
+        } else {
+            imagePath = "";
+        }
+    });
+    new MutationObserver(() => {
+        // log(document.querySelector(".q-context-menu").innerHTML);
 
-    const qContextMenu = document.querySelector(".q-context-menu");
+        const qContextMenu = document.querySelector(".q-context-menu");
 
-    if (qContextMenu && imagePath) {
-      let localPath = decodeURIComponent(imagePath);
-      addQContextMenu(
-        qContextMenu,
-        `
+        if (qContextMenu && imagePath) {
+            let localPath = decodeURIComponent(imagePath);
+            addQContextMenu(
+                qContextMenu,
+                `
             <svg class="q-icon" t="1689317139126" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2413" width="18" height="18">
             <defs>
                 <style><![CDATA[
@@ -85,27 +81,21 @@ function addMainQContextMenu() {
             <path class="path" d="M608.4 667.2c-12.3 0.2-20.4 8.3-20.4 20V859c0 12.3 8.5 20.1 20.8 19.9 12.9-0.2 21-6.9 21.1-19.7 0.2-57.4 0.1-114.9 0-172.3 0-12-8.4-19.9-21.5-19.7zM861.4 667.4c-9.9-1.8-23.3 4.9-23.3 18.2-0.2 29.2 0 58.3 0 87.5v87c0 1.6-0.1 3.4 0.4 4.9 3.3 9.4 14.4 16.2 23.5 14 11.4-2.7 17.9-7.2 18-21.4 0.2-55.5 0.1-111 0.1-166.5-0.1-14.4-4.6-21.1-18.7-23.7zM768.7 727.3c-2.6-9.4-13-16.8-22.1-15.1-12.4 2.4-19.4 6.6-19.5 20.9-0.3 41.1-0.1 82.3-0.1 123.4 0 13.8 5.7 20 17.5 22.2 11.1 2.1 24.4-4.5 24.5-19.1v-63.5-64.5c0-1.3 0-2.9-0.3-4.3zM741 544.8c-8.7 1.9-14 10.2-14 19.8V653c0 13.1 4 21 18.1 23.7 10.3 1.9 24-5.2 23.9-18.5-0.1-15.8 0-31.6 0-47.5 0-15.3-0.2-30.6 0-46 0.3-19-14.6-22.8-28-19.9zM622 547.4c-4.9-3.4-10.1-3.3-15.4-3.3-10.5 0-18.5 7.9-18.5 18.3v26c0 9-0.1 18 0 27 0.1 4.6 1.3 8.7 4.9 12.3 5.2 5.2 11.2 6.7 18.2 6.5 9.9-0.3 18.8-8.9 18.8-18.7 0.1-17.7 0.2-35.3-0.1-53 0-6.1-2.4-11.3-7.9-15.1zM878.3 555.9c-2.2-6.2-9.8-11.8-17.9-12-14.3-0.5-23.6 7.9-22.5 22.8 0.5 7 0.1 14 0.1 21v25c0 1.5 0 3 0.4 4.4 3.2 10.3 12.9 15.5 23.9 14 11-1.6 17.4-8.4 17.6-19.7 0.3-15.8 0.1-31.7 0.1-47.5 0-2.9-0.8-5.5-1.7-8zM352 257.8c-1.9-7.3-7.9-12.7-15.4-13.7-1.3-0.2-2.7-0.4-4-0.4-0.6 0-1.5 0.2-1.7-0.8h-28.8c-0.4 0.7-1.1 0.3-1.6 0.3-13.3 0-26.6-0.1-39.9 0.1-4.8 0-9.5 0.9-13.7 3.5-4.1 2.5-6.4 6.2-7.7 10.7-0.2 0.9 0 1.9-0.6 2.6v75.5c1 0.2 0.7 1.1 0.8 1.7 0.7 4.1 1.8 7.9 4.6 11 3.7 4.1 8.6 5.8 13.9 5.9 24.3 0.1 48.7 0.1 73 0 3.1 0 6.1-0.3 9.1-1.3 7.9-2.5 12.7-8.9 12.7-17.2v-71.9c0.1-2-0.2-4-0.7-6zM785.5 250.1c-1.9-7.3-7.9-12.7-15.4-13.7-1.3-0.2-2.7-0.4-4-0.4-0.6 0-1.5 0.2-1.7-0.8h-28.8c-0.4 0.7-1.1 0.3-1.6 0.3-13.3 0-26.6-0.1-39.9 0.1-4.8 0-9.5 0.9-13.7 3.5-4.1 2.5-6.4 6.2-7.7 10.7-0.2 0.9 0 1.9-0.6 2.6v75.5c1 0.2 0.7 1.1 0.8 1.7 0.7 4.1 1.8 7.9 4.6 11 3.7 4.1 8.6 5.8 13.9 5.9 24.3 0.1 48.7 0.1 73 0 3.1 0 6.1-0.3 9.1-1.3 7.9-2.5 12.7-8.9 12.7-17.2v-71.9c0.2-2-0.2-4.1-0.7-6zM351.4 676.6c-1.9-7.3-7.9-12.7-15.4-13.7-1.3-0.2-2.7-0.4-4-0.4-0.6 0-1.5 0.2-1.7-0.8h-28.8c-0.4 0.7-1.1 0.3-1.6 0.3-13.3 0-26.6-0.1-39.9 0.1-4.8 0-9.5 0.9-13.7 3.5-4.1 2.5-6.4 6.2-7.7 10.7-0.2 0.9 0 1.9-0.6 2.6v75.5c1 0.2 0.7 1.1 0.8 1.7 0.7 4.1 1.8 7.9 4.6 11 3.7 4.1 8.6 5.8 13.9 5.9 24.3 0.1 48.7 0.1 73 0 3.1 0 6.1-0.3 9.1-1.3 7.9-2.5 12.7-8.9 12.7-17.2v-71.9c0.1-2-0.2-4-0.7-6z" p-id="2419"></path>
         </svg>
             `,
-        "作为二维码解析",
-        async () => {
-          const filePathArr = localPath.split("/");
-          const fileName = filePathArr[filePathArr.length - 1]
-            .split(".")[0]
-            .toUpperCase()
-            .replace("_0", "");
-          const picSrc = `https://gchat.qpic.cn/gchatpic_new/0/0-0-${fileName}/0`;
-
-          try {
-            var decoded = await decodeQRUrl(picSrc);
-
-            await window.qr_decode.showResult(decoded);
-          } catch (e) {
-            console.log("[QR-Decode]", "解码失败", e);
-            await window.qr_decode.showFailed(e);
-          }
+                "作为二维码解析",
+                async () => {
+                    //新版QQ不管是手机还是PC，仅表情可以拼接网链，但是图片已经不行了。
+                    try {
+                        var decoded = await decodeQRUrl(localPath);
+                        console.log('原decoded的结果为:'+decoded)
+                        await window.qr_decode.showResult(decoded);
+                    } catch (e) {
+                        console.log("[QR-Decode]", "解码失败", e);
+                        await window.qr_decode.showFailed(e);
+                    }
+                }
+            );
         }
-      );
-    }
-  }).observe(document.querySelector("body"), { childList: true });
+    }).observe(document.querySelector("body"), {childList: true});
 }
 
-export { addQContextMenu, addMainQContextMenu };
+export {addQContextMenu, addMainQContextMenu};
