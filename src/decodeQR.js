@@ -27,6 +27,27 @@ export async function decodeQR(image) {
     });
 }
 
+export async function encodeQR(text) {
+  // 调用草料二维码API
+  return await fetch("https://cli.im/Apis/QrCode/saveStatic", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.183",
+    },
+    body: `info=${text}&content=${text}&level=H&size=500&fgcolor=%23000000&bggcolor=%23FFFFFF&transparent=false&type=text&base64=&static_create_from=19999&code_small_type=text&codeimg=1`,
+  })
+    .then((res) => res.json())
+    .then((json) => {
+      if (json.status == 1) {
+        return json.data.codeimg_base64;
+      } else {
+        throw Error(json.message);
+      }
+    });
+}
+
 export async function decodeQRUrl(imageUrl) {
   return new Promise((accept, reject) => {
     var image = new Image();
