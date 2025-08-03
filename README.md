@@ -5,7 +5,7 @@
 LiteLoaderQQNT插件，快速解析聊天中的图片二维码。
 使用前需要安装[LiteLoaderQQNT](https://github.com/mo-jinran/LiteLoaderQQNT)，并在QQNT新版上使用。
 
-建议加入更新日志频道，接收最新更新和使用提示[https://t.me/llqqnt_xh](https://t.me/llqqnt_xh)。
+强烈建议加TG频道 https://t.me/+UwFw2Ff-8scyOWY1 来蹲更新/公告（老频道被爆破了，请加新频道）
 
 ## 使用方法
 
