@@ -1,3 +1,5 @@
+# 目前新版QQ已自带二维码解析，本插件作用已不大，所以目前停更。如果有发现自带二维码解析不好用的，欢迎随时发Issue，我会继续更新。
+
 # LiteLoaderQQNT - qr-decode
 
 LiteLoaderQQNT插件，快速解析聊天中的图片二维码。
@@ -7,12 +9,11 @@ LiteLoaderQQNT插件，快速解析聊天中的图片二维码。
 
 ## 使用方法
 
-*建议从`LiteLoaderQQNT`应用商店中直接下载安装，方便快捷。*（新版本1.0`LiteLoaderQQNT`没有插件商店了，请遵循[手动安装方法](https://liteloaderqqnt.github.io/guide/plugins.html)）
+直接在本仓库Release中下载zip，然后在LiteLoaderQQNT配置界面中选择插件压缩包导入即可
+
+也可以使用插件商店类应用安装，如 https://github.com/ltxhhz/LL-plugin-list-viewer
 
 **版本不兼容提示**：从1.3.3起，插件已适配1.0版本以上`LiteLoaderQQNT`框架，同时不再兼容旧版框架，请遵循[安装方法](https://liteloaderqqnt.github.io/guide/install.html)更新框架。
-
-
-也可以clone或下载zip文件解压，保留文件夹结构（文件夹名称为`插件名`，内容为github上的内容），将文件夹移动至`LiteLoaderQQNT数据目录/plugins/`下面，重启QQNT即可。
 
 直接在聊天界面直接右键图片，或者双击聊天中的图片，在新弹出的图片预览界面对图片进行右键，可发现解析二维码菜单，点击即可。
 
